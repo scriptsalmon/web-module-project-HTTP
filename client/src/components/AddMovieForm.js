@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
+import axios from 'axios';
 
-const AddMovieForm = () => {
+const AddMovieForm = (props) => {
+    const { setMovies } = props;
+    const { push } = useHistory();
     const [movie, setMovie] = useState({
         title:"",
 		director: "",
@@ -20,11 +24,18 @@ const AddMovieForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        axios.post(`http://localhost:5000/api/movies`, movie)
+            .then(res => {
+                setMovies(res.data);
+                push('/movies');
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
 
     const { title, director, genre, metascore, description } = movie;
 
-    console.log(movie);
     return(
         <div className="col">
 		<div className="modal-content">
